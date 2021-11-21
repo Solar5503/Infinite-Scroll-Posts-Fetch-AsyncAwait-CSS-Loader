@@ -4,6 +4,7 @@ const filter = document.getElementById('filter');
 
 let limit = 5;
 let page = 1;
+let isLoadingActive = false;
 postContainer.innerHTML = '';
 
 //Fetch posts from API
@@ -36,6 +37,7 @@ async function showPosts() {
 //Show loader and fetch more posts
 function showLoading() {
   loading.classList.add('show');
+  isLoadingActive = true;
 
   setTimeout(() => {
     loading.classList.remove('show');
@@ -43,6 +45,7 @@ function showLoading() {
     setTimeout(() => {
       page++;
       showPosts();
+      isLoadingActive = false;
     }, 300);
   }, 1000);
 }
@@ -70,7 +73,10 @@ showPosts();
 window.addEventListener('scroll', () => {
   const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 
-  if (scrollTop + clientHeight >= scrollHeight - 5) {
+  if (
+    scrollTop + clientHeight >= scrollHeight - 5 &&
+    isLoadingActive === false
+  ) {
     showLoading();
   }
 });
